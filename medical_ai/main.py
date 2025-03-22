@@ -76,7 +76,7 @@ st.markdown("""
     }
     .answer-container {
         background-color: white;
-        padding: 2rem;
+        padding: 0.1rem;
         border-radius: 12px;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         margin-top: 1.5rem;

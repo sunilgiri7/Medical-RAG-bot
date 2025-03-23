@@ -15,232 +15,217 @@ os.environ['GROQ_API_KEY'] = os.getenv('GROQ_API_KEY')
 model = Groq(id="llama-3.3-70b-versatile")
 agent = Agent(model=model, markdown=True)
 
-# Page config
+# Page config with dark mode title and icon
 st.set_page_config(
     page_title="MediTech Advisor",
     page_icon="🏥",
     layout="wide",
 )
 
-# Custom CSS for a clean, modern medical theme
+# Custom CSS for a modern, professional dark theme
 st.markdown("""
     <style>
-    .main {
-        background-color: #f8fafc;
-        color: #334155;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Import Google Font */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+    html, body, [class*="css"]  {
+        font-family: 'Inter', sans-serif;
     }
+    
+    /* Global Background and Text Color */
+    .stApp, .main {
+        background-color: #0e0e0e;
+        color: #e8e8e8;
+    }
+    
+    /* Container settings */
     .stApp {
         max-width: 1200px;
         margin: 0 auto;
     }
-    h1 {
-        color: #0369a1;
-        font-weight: 700;
+    
+    /* Header Styling */
+    .header-container {
+        padding: 2rem 0;
+        text-align: center;
+        border-bottom: 1px solid #333333;
+    }
+    .header-container h1 {
+        font-size: 3rem;
+        color: #f0a500;
         margin-bottom: 0.5rem;
-        font-size: 2.5rem;
     }
-    .subtitle {
-        color: #64748b;
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        font-weight: 400;
+    .header-container p {
+        font-size: 1.25rem;
+        color: #a8a8a8;
     }
-    .stButton>button {
-        background-color: #0284c7;
-        color: white;
-        border-radius: 8px;
-        padding: 0.75em 2em;
-        font-weight: 600;
-        border: none;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        transition: all 0.2s ease;
+    
+    /* Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background-color: #141414;
+        border-right: 1px solid #333333;
     }
-    .stButton>button:hover {
-        background-color: #0369a1;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        transform: translateY(-2px);
+    [data-testid="stSidebar"] .css-1d391kg {
+        background-color: #141414;
     }
-    .upload-section, .query-section {
-        background-color: white;
-        padding: 0.1rem;
+    [data-testid="stSidebar"] .sidebar-content {
+        padding: 2rem;
+    }
+    
+    /* Card Section Styling */
+    .section-container {
+        background-color: #1a1a1a;
         border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     }
     .section-title {
-        color: #0369a1;
-        font-size: 1.2rem;
-        font-weight: 600;
+        font-size: 1.5rem;
+        color: #f0a500;
         margin-bottom: 1rem;
+        border-bottom: 1px solid #333333;
+        padding-bottom: 0.5rem;
     }
+    
+    /* Input and Button Styling */
+    .stTextInput>div>div>input, .stTextArea>div>div>textarea {
+        background-color: #141414;
+        color: #e8e8e8;
+        border: 1px solid #333333;
+        border-radius: 8px;
+        padding: 0.75rem;
+    }
+    .stButton>button {
+        background-color: #f0a500;
+        color: #0e0e0e;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stButton>button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+    }
+    
+    /* Answer Display Styling */
     .answer-container {
-        background-color: white;
-        padding: 0.1rem;
+        background-color: #141414;
         border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        margin-top: 1.5rem;
-        border-left: 5px solid #0284c7;
+        padding: 2rem;
+        margin-top: 2rem;
+        border-left: 6px solid #f0a500;
     }
     .answer-header {
-        color: #0369a1;
-        font-size: 1.4rem;
-        font-weight: 600;
+        font-size: 1.75rem;
+        color: #f0a500;
         margin-bottom: 1rem;
-        border-bottom: 2px solid #e2e8f0;
+        border-bottom: 1px solid #333333;
         padding-bottom: 0.5rem;
     }
     .answer-content {
         font-size: 1.1rem;
         line-height: 1.7;
-    }
-    .answer-content h2 {
-        color: #0369a1;
-        font-size: 1.3rem;
-        margin-top: 1.5rem;
-        margin-bottom: 0.75rem;
-        font-weight: 600;
-    }
-    .answer-content h3 {
-        color: #334155;
-        font-size: 1.1rem;
-        margin-top: 1.2rem;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-    }
-    .answer-content ul, .answer-content ol {
-        margin-left: 1.5rem;
-        margin-bottom: 1rem;
-    }
-    .answer-content li {
-        margin-bottom: 0.5rem;
-    }
-    .answer-content p {
-        margin-bottom: 1rem;
+        color: #e8e8e8;
     }
     .answer-content a {
-        color: #0284c7;
-        text-decoration: none;
-        border-bottom: 1px dotted #0284c7;
+        color: #f0a500;
+        text-decoration: underline;
     }
-    .answer-content blockquote {
-        border-left: 3px solid #0284c7;
-        padding-left: 1rem;
-        font-style: italic;
-        color: #64748b;
-        margin: 1rem 0;
-    }
+    
+    /* Table Styling */
     .answer-content table {
         width: 100%;
         border-collapse: collapse;
-        margin: 1rem 0 2rem 0;
+        margin: 1rem 0;
     }
-    .answer-content table th {
-        background-color: #f1f5f9;
+    .answer-content th, .answer-content td {
+        border: 1px solid #333333;
         padding: 0.75rem;
         text-align: left;
-        font-weight: 600;
-        border-bottom: 2px solid #e2e8f0;
     }
-    .answer-content table td {
-        padding: 0.75rem;
-        border-bottom: 1px solid #e2e8f0;
+    .answer-content th {
+        background-color: #1f1f1f;
     }
-    .citation {
-        font-size: 0.8rem;
-        color: #64748b;
-        margin-top: 2rem;
-        padding-top: 1rem;
-        border-top: 1px solid #e2e8f0;
-    }
+    
+    /* Footer Styling */
     .footer {
         text-align: center;
+        padding: 1rem 0;
+        border-top: 1px solid #333333;
         margin-top: 2rem;
-        color: #64748b;
-        font-size: 0.9rem;
-    }
-    .footer img {
-        height: 24px;
-        margin-right: 0.5rem;
-        vertical-align: middle;
-    }
-    .stAlert {
-        background-color: #f0f9ff;
-        color: #0c4a6e;
-        border: none;
-        border-radius: 8px;
+        color: #a8a8a8;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# App Header
-col1, col2 = st.columns([2, 1])
-
-with col1:
-    st.markdown("<h1>MediTech Advisor</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subtitle'>Expert guidance on medical equipment, devices, and healthcare systems</p>", unsafe_allow_html=True)
+# Header Section
+st.markdown("""
+    <div class="header-container">
+        <h1>MediTech Advisor</h1>
+        <p>Advanced AI Guidance on Medical Equipment & Healthcare Systems</p>
+    </div>
+""", unsafe_allow_html=True)
 
 # Sidebar with information
 with st.sidebar:
     st.image("https://img.freepik.com/free-photo/pills-medical-tools-arrangement-flat-lay_23-2149341610.jpg?semt=ais_hybrid", width=150)
     st.markdown("### About MediTech Advisor")
     st.markdown("""
-    MediTech Advisor provides expert knowledge on:
+    MediTech Advisor delivers cutting-edge insights on:
     
     * Medical equipment specifications
     * Device operation guidelines
     * Healthcare technology systems
-    * Regulatory compliance information
+    * Regulatory compliance and safety
     * Best practices in medical technology
     """)
-    
     st.markdown("---")
-    st.markdown("### How to use")
+    st.markdown("### How to Use")
     st.markdown("""
-    1. Upload relevant PDF documentation (optional)
-    2. Enter your medical technology question
-    3. Click 'Get Expert Answer'
+    1. Upload relevant technical documents (PDFs) if available.
+    2. Enter your medical technology query.
+    3. Click **Get Expert Answer**.
     """)
 
-# Main content area
-st.markdown("<div class='upload-section'>", unsafe_allow_html=True)
-st.markdown("<p class='section-title'>📄 Upload Technical Documentation</p>", unsafe_allow_html=True)
+# Upload Section
+st.markdown('<div class="section-container">', unsafe_allow_html=True)
+st.markdown('<div class="section-title">📄 Upload Technical Documentation</div>', unsafe_allow_html=True)
 uploaded_files = st.file_uploader("Upload product manuals, spec sheets, or technical guides (PDF)", 
-                                 accept_multiple_files=True, 
-                                 type="pdf",
-                                 help="We'll extract relevant information from these documents")
-st.markdown("</div>", unsafe_allow_html=True)
+                                  accept_multiple_files=True,
+                                  type="pdf",
+                                  help="We will extract key details from these documents.")
+st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown("<div class='query-section'>", unsafe_allow_html=True)
-st.markdown("<p class='section-title'>❓ Ask Your Question</p>", unsafe_allow_html=True)
+# Query Section
+st.markdown('<div class="section-container">', unsafe_allow_html=True)
+st.markdown('<div class="section-title">❓ Ask Your Question</div>', unsafe_allow_html=True)
 question = st.text_area("Enter your question about medical equipment, devices, or healthcare systems",
-                      placeholder="Example: What are the key features of modern ventilators for COVID-19 patients?",
-                      height=100)
-
-# Examples to help users
+                          placeholder="Example: What are the latest features of modern ventilators for ICU settings?",
+                          height=120)
 with st.expander("See example questions"):
     st.markdown("""
-    - What are the advantages of 3T MRI machines compared to 1.5T models?
-    - How do modern insulin pumps integrate with continuous glucose monitoring systems?
-    - What are the sterilization requirements for surgical robots?
-    - Compare ultrasound systems for cardiac diagnostics
-    - What regulatory approvals are needed for a new infusion pump in the US market?
+    - What are the advantages of 3T MRI machines over 1.5T models?
+    - How do modern insulin pumps integrate with continuous glucose monitors?
+    - What are the sterilization protocols for surgical robots?
+    - Compare ultrasound systems for cardiac diagnostics.
+    - What regulatory approvals are required for new infusion pumps in the US?
     """)
-
 search_button = st.button("Get Expert Answer")
-st.markdown("</div>", unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 def generate_prompt(question: str, pdf_text: str, web_results: str) -> str:
     """
-    Create a detailed prompt that combines context from PDFs and web searches,
-    optimized for medical device and healthcare technology information.
+    Generate a detailed prompt that integrates PDF content and web search results.
     """
     context = f"### PDF DOCUMENTATION:\n{pdf_text}\n\n### WEB SEARCH RESULTS:\n{web_results}"
-    
     prompt = f"""
-You are MediTech Advisor, an expert AI specializing in medical equipment, devices, healthcare technology systems, and related regulatory standards. A healthcare professional has asked: "{question}"
+You are MediTech Advisor, an expert AI specializing in medical equipment, devices, healthcare technology systems, and regulatory standards. A healthcare professional has asked: "{question}"
 
-First, analyze this question to identify the specific medical technology domain, key requirements, and information needs.
+First, analyze the question to identify the specific medical technology domain, key requirements, and information needs.
 
 ### AVAILABLE CONTEXT
 {context}
@@ -250,27 +235,27 @@ First, analyze this question to identify the specific medical technology domain,
 2. Begin with a clear, direct answer to the question.
 3. Include precise technical specifications, clinical applications, and operational considerations when relevant.
 4. Organize your response with clear headings and bullet points for readability.
-5. If comparing technologies or approaches, use a structured comparison format.
+5. If comparing technologies, use a structured comparison format.
 6. Include numerical data and statistics when available.
-7. For regulatory information, specify applicable standards (FDA, CE, ISO, etc.) and requirements.
-8. If safety considerations are relevant, highlight them prominently.
-9. Cite your sources explicitly (PDF document names with page numbers, URLs from web results).
-10. If information is incomplete, clearly state what additional data would be helpful.
-11. For implementation questions, include practical considerations and best practices.
-12. Use medical and technical terminology appropriately, defining complex terms.
+7. For regulatory details, mention applicable standards (FDA, CE, ISO, etc.) and requirements.
+8. Highlight any safety considerations.
+9. Cite sources explicitly (PDF document names with page numbers, URLs from web results).
+10. If further data is needed, specify what additional information would be helpful.
+11. For implementation questions, include practical guidelines and best practices.
+12. Use proper medical and technical terminology.
 
 ### RESPONSE FORMAT
-Structure your answer with these sections as appropriate:
-- Summary Answer (direct response to the question)
-- Technical Specifications (when discussing equipment)
+Structure your answer with the following sections (if applicable):
+- Summary Answer
+- Technical Specifications
 - Clinical Applications
 - Operational Considerations
 - Regulatory & Safety Information
-- Comparison Table (when comparing options)
+- Comparison Table (if comparing options)
 - Implementation Guidelines
 - Sources & Citations
 
-Format your response using Markdown for readability. Use tables for comparing options and bullet points for lists.
+Format your answer using Markdown.
 """
     return prompt
 
@@ -278,8 +263,8 @@ if search_button:
     if not question:
         st.warning("Please enter a question to continue.")
     else:
-        with st.spinner("Researching your query... This may take a moment"):
-            # Process PDFs if uploaded
+        with st.spinner("Gathering information... Please wait"):
+            # Process PDF uploads
             pdf_text = ""
             if uploaded_files:
                 with tempfile.TemporaryDirectory() as temp_dir:
@@ -289,36 +274,32 @@ if search_button:
                         with open(temp_path, "wb") as f:
                             f.write(uploaded_file.getbuffer())
                         pdf_paths.append(temp_path)
-                        
-                    # Extract relevant information from PDFs
+                    
+                    # Extract text from PDFs
                     pdf_tool = PDFSearchTool()
                     pdf_text = pdf_tool.search(question, pdf_paths)
             
-            # Gather information from the web
+            # Perform a web search for additional context
             web_tool = DuckDuckGoTools()
             try:
                 web_results = web_tool.search(question)
             except Exception as e:
                 web_results = f"Web search error: {e}"
             
-            # Generate optimized prompt
+            # Generate the final prompt for the agent
             prompt = generate_prompt(question, pdf_text, web_results)
             
-            # Get response from the agent
+            # Get the expert response from the agent
             try:
                 run_response = agent.run(prompt)
                 answer = run_response.content if hasattr(run_response, "content") else str(run_response)
             except Exception as e:
                 answer = f"Error generating answer: {e}"
             
-            # Display the answer in a structured format
-            st.markdown("<div class='answer-container'>", unsafe_allow_html=True)
-            st.markdown("<div class='answer-header'>Expert Analysis</div>", unsafe_allow_html=True)
-            st.markdown("<div class='answer-content'>", unsafe_allow_html=True)
+            # Display the answer
+            st.markdown('<div class="answer-container">', unsafe_allow_html=True)
+            st.markdown('<div class="answer-header">Expert Analysis</div>', unsafe_allow_html=True)
+            st.markdown('<div class="answer-content">', unsafe_allow_html=True)
             st.markdown(answer, unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
-            st.markdown("</div>", unsafe_allow_html=True)
-
-# Footer
-st.markdown("<div class='footer'>", unsafe_allow_html=True)
-st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)

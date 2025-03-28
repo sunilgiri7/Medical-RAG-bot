@@ -17,7 +17,7 @@ agent = Agent(model=model, markdown=True)
 
 # Page config with dark mode title and icon
 st.set_page_config(
-    page_title="MediTech Advisor",
+    page_title="EquipCare Advisor",
     page_icon="🏥",
     layout="wide",
 )
@@ -115,7 +115,7 @@ st.markdown("""
     .answer-container {
         background-color: #141414;
         border-radius: 12px;
-        padding: 2rem;
+        padding: 0.2rem;
         margin-top: 2rem;
         border-left: 6px solid #f0a500;
     }
@@ -165,17 +165,17 @@ st.markdown("""
 # Header Section
 st.markdown("""
     <div class="header-container">
-        <h1>MediTech Advisor</h1>
-        <p>Advanced AI Guidance on Medical Equipment & Healthcare Systems</p>
+        <h1>EquipCare Advisor</h1>
+        <p>Conveys a commitment to caring for and maintaining medical equipment.</p>
     </div>
 """, unsafe_allow_html=True)
 
 # Sidebar with information
 with st.sidebar:
-    st.image("https://img.freepik.com/free-photo/pills-medical-tools-arrangement-flat-lay_23-2149341610.jpg?semt=ais_hybrid", width=150)
-    st.markdown("### About MediTech Advisor")
+    st.image("../images/medi-logo.png", width=150)
+    st.markdown("### About EquipCare Advisor")
     st.markdown("""
-    MediTech Advisor delivers cutting-edge insights on:
+    EquipCare Advisor delivers cutting-edge insights on:
     
     * Medical equipment specifications
     * Device operation guidelines
@@ -223,7 +223,7 @@ def generate_prompt(question: str, pdf_text: str, web_results: str) -> str:
     """
     context = f"### PDF DOCUMENTATION:\n{pdf_text}\n\n### WEB SEARCH RESULTS:\n{web_results}"
     prompt = f"""
-You are MediTech Advisor, an expert AI specializing in medical equipment, devices, healthcare technology systems, and regulatory standards. A healthcare professional has asked: "{question}"
+You are EquipCare Advisor, an expert AI specializing in medical equipment, devices, healthcare technology systems, and regulatory standards. A healthcare professional has asked: "{question}"
 
 First, analyze the question to identify the specific medical technology domain, key requirements, and information needs.
 

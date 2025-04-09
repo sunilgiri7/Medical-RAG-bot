@@ -6,7 +6,7 @@ from agno.agent import Agent
 from agno.models.groq import Groq
 from agno.tools.duckduckgo import DuckDuckGoTools
 from utils.pdf_tool import PDFSearchTool
-
+from pathlib import Path
 # Load environment variables and set API key
 load_dotenv()
 os.environ['GROQ_API_KEY'] = os.getenv('GROQ_API_KEY')
@@ -172,7 +172,8 @@ st.markdown("""
 
 # Sidebar with information
 with st.sidebar:
-    st.image("../images/medi-logo.png", width=150)
+    image_path = Path(__file__).resolve().parent.parent / "images" / "medi-logo.png"
+    st.image(str(image_path), width=150)
     st.markdown("### About EquipCare Advisor")
     st.markdown("""
     EquipCare Advisor delivers cutting-edge insights on:
